@@ -19,9 +19,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include "stdio.h"
+#include "i2c-lcd.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+volatile int fin=0,up=0,down=0,cambio=0;
+__IO uint16_t  luz=0;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +62,111 @@ static void MX_TIM4_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+
+
+{
+
+if (GPIO_Pin==GPIO_PIN_0)
+
+{
+
+
+if(fin==0)
+
+up=1;
+
+}
+
+
+
+if (GPIO_Pin==GPIO_PIN_1)
+
+{
+
+if(fin==1)
+
+down=1;
+
+
+}
+
+if (GPIO_Pin==GPIO_PIN_2)
+
+
+
+{
+
+cambio=1;
+
+}
+
+
+
+}
+
+int antirrebotes(volatile int* button_int, GPIO_TypeDef* GPIO_Port, uint16_t GPIO_number)
+
+{
+
+static uint8_t button_count = 0;
+
+static int counter = 0;
+
+
+
+if (*button_int == 1)
+
+{
+
+if (button_count == 0)
+
+{
+
+counter = HAL_GetTick();
+
+button_count ++;
+
+}
+
+if (HAL_GetTick() - counter >= 20)
+
+{
+
+counter = HAL_GetTick();
+
+if (HAL_GPIO_ReadPin(GPIO_Port, GPIO_number) != 1)
+
+{
+
+button_count = 0;
+
+}
+
+else{
+
+button_count ++;
+
+}
+if (button_count == 3)
+
+{ //Periodo Antirrebotes
+
+button_count = 0;
+
+*button_int = 0;
+
+return 1;
+
+}
+
+}
+
+}
+
+return 0;
+
+}
 
 /* USER CODE END 0 */
 
@@ -92,6 +201,19 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_4);
+  lcd_init ();
+  lcd_put_cur(0, 0);
+  lcd_send_string("TRABAJO  ");
+  lcd_send_string("MICROS");
+
+
+
+  lcd_put_cur(1, 0);
+  lcd_send_string("SED 2023");
+  HAL_Delay(3000);
+  lcd_clear();
+
 
   /* USER CODE END 2 */
 
@@ -102,6 +224,224 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  while((up==1)&&(fin==0)){		//subir persiana // 15 subbiendo 13 subido del todo
+
+		          lcd_init ();
+		  		  lcd_put_cur(0, 0);
+		  		  lcd_send_string("SUBIENDO");
+
+
+	 	             HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
+
+	 	 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1); // 15 indica subiendo
+
+
+
+	 	 	  			//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
+
+
+
+	 	 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
+
+
+
+
+
+
+	 	 	  			// SE HA SUBIDO YA
+
+	 	 	  		  for (int i=90;i>10;i=i-5){
+	 	 	  			  __HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_4,i);
+	 	 	  		    HAL_Delay(200);}
+
+
+	 	 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,0); // 15 indica subiendo
+
+
+
+	 	 	  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
+
+
+
+	 	 	  			fin=1;
+
+
+
+	 	 	  			up=0;
+
+
+                        lcd_clear();
+
+
+
+	 			 }
+	  while((down==1)&&(fin==1)){		//bajar persiana // 14 bajando 12 abajo
+
+		                        lcd_init ();
+		  		  		        lcd_put_cur(0, 0);
+		  		  		        lcd_send_string("BAJANDO");
+
+
+	 	 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,0);
+
+
+
+	 	 	  		  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);//bajando
+
+
+
+	 	 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
+
+
+
+	 	 	  		  			// SE HA BAJADO YA
+	 	 	  		  		  for (int i=10;i<90;i=i+5){
+	 	 	  		  			  __HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_4,i);
+	 	 	  		  		    HAL_Delay(200);}
+
+
+
+
+	 	 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,0);
+
+
+
+	 	 	  		  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,1);
+
+
+
+	 	 	  		  		    fin=0;
+
+
+
+	 	 	  		  			down=0;
+
+                                lcd_clear();
+
+
+	 	 	 }
+
+	  while(cambio){
+
+
+
+	  	 		  if(luz<50 && fin==0){		//subir persiana // 15 subbiendo 13 subido del todo
+
+	  	 			  	  	  	  	  	  	  	  	  	  	  	  lcd_init ();
+	  	 				 		 			 				  lcd_put_cur(0, 0);
+	  	 				 		 			 				  lcd_send_string("SUBIENDO");
+
+	  	 		 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1); // 15 indica subiendo
+
+
+
+	  	 		 	  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
+
+
+
+	  	 		 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
+
+	  	 		 	  			// SE HA SUBIDO YA
+
+	  	 			 	  		  for (int i=90;i>10;i++){
+	  	 			 	  			  __HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_4,i);
+	  	 			 	  		    HAL_Delay(200);}
+
+
+
+
+	  	 		 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,0); // 15 indica subiendo
+
+
+
+	  	 		 	  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
+
+
+
+	  	 		 	  			fin=1;
+
+
+
+	  	 		 	  			up=0;
+	  		 	 	 	 		  lcd_clear();
+
+
+
+
+	  	 		  }
+	  	 		  	  	  	  	  	  	  	HAL_ADC_Start(&hadc1);
+
+	  	 		 		 		 	  		if (HAL_ADC_PollForConversion(&hadc1,1000000)==HAL_OK)
+
+	  	 		 		 		 	  			 		 	 {
+
+	  	 		 		 		 	  			 		 	  	luz=HAL_ADC_GetValue(&hadc1);
+
+	  	 		 		 		 	  			 		 	  	}
+
+
+
+
+
+
+	  	 		 	 if(luz>50 && fin==1 ){		//bajar persiana // 14 bajando 12 abajo
+
+	  	 		 		 	 	 	 	 	  lcd_init ();
+	  	 		 			 				  lcd_put_cur(0, 0);
+	  	 		 			 				  lcd_send_string("BAJANDO");
+
+	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,0);
+
+
+
+	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);//bajando
+
+
+
+	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
+
+
+	  	 		 	  		  			// SE HA BAJADO YA
+	  	 		 	  		  		  for (int i=10;i<90;i++){
+	  	 		 	  		  			  __HAL_TIM_SET_COMPARE(&htim4,TIM_CHANNEL_4,i);
+	  	 		 	  		  		    HAL_Delay(200);}
+
+
+
+	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,0);
+
+
+
+	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,1);
+
+
+
+	  	 		 	  		  			fin=0;
+
+
+
+	  	 		 	  		  			down=0;
+	  	 			 	 	 	 		  lcd_clear();
+
+
+
+
+
+	  	 		 	 }
+	  									HAL_ADC_Start(&hadc1);
+
+	  		 		 	  		  		if (HAL_ADC_PollForConversion(&hadc1,1000000)==HAL_OK)
+
+	  		 		 	  		  		{
+
+	  		 		 	  		  		luz=HAL_ADC_GetValue(&hadc1);
+
+	  		 		 	  		  		}
+
+
+	  	}
+
+	  //
   }
   /* USER CODE END 3 */
 }
@@ -291,6 +631,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
 }
 
