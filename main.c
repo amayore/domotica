@@ -69,64 +69,35 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 if (GPIO_Pin==GPIO_PIN_0)
 
 {
-
-
 if(fin==0)
-
 up=1;
 
 }
-
-
-
 if (GPIO_Pin==GPIO_PIN_1)
-
 {
 
 if(fin==1)
 
 down=1;
-
-
 }
 
 if (GPIO_Pin==GPIO_PIN_3)
-
-
-
 {
-
 cambio=1;
-
 }
-
-
-
 }
 
 int antirrebotes(volatile int* button_int, GPIO_TypeDef* GPIO_Port, uint16_t GPIO_number)
-
 {
-
 static uint8_t button_count = 0;
-
 static int counter = 0;
-
-
-
 if (*button_int == 1)
-
 {
-
-if (button_count == 0)
-
-{
-
-counter = HAL_GetTick();
-
-button_count ++;
-
-}
+	if (button_count == 0)
+	{
+		counter = HAL_GetTick();
+		button_count ++;
+	}
 
 if (HAL_GetTick() - counter >= 20)
 
