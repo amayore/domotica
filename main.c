@@ -215,203 +215,68 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  while((up==1)&&(fin==0)){
 
-
-
-
 	 	 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
 
 	 	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1);
 
-
-
-         HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
-
-
-
-
-
-
-
+         	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
 
 	 	for (int i=90;i>10;i=i-5){
 	 	 	  __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
 	 	 	  HAL_Delay(200);}
 
-
 	 	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,0);
-
-
-
-	 	  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
-
-
+		  
+	 	 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
 
 	 	 fin=1;
-
-
-
-	 	 up=0;
-
-
-
-
-
-	 			 }
+	 	 up=0;	 			 }
 	  while((down==1)&&(fin==1)){
-
-
-
-
 	 	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,0);
-
-
-
 	 	 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
-
-
-
-	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
-
-
-
-
+	       	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
 	 	 for (int i=10;i<90;i=i+5){
-	 	  __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
-	 	 HAL_Delay(200);}
-
-
-
-
+	 	  	__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
+	 	 	HAL_Delay(200);}
 	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,0);
-
-
-
 	 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,1);
-
-
-
 	 	fin=0;
-
-
-
-	 	down=0;
-
-
-
-
-	 	 	 }
-
+		down=0;
+	 	 }
 	  while(cambio){
-
-
-
-	  	 		  if(luz>50 && fin==0){
-
-
-
-	  	 		 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1);
-
-
-
-	  	 		 	  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
-
-
-
-	  	 		 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
-
-
-
-	  	 			 	  		  for (int i=90;i>10;i=i-5){
-	  	 			 	  			  __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
-	  	 			 	  		    HAL_Delay(200);}
-
-
-
-
-	  	 		 	  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,0);
-
-
-
-	  	 		 	  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
-
-
-
-	  	 		 	  			fin=1;
-
-
-
-	  	 		 	  			up=0;
-
-
-
-
-
-	  	 		  }
-	  	 		  	  	  	  	  	  	  	HAL_ADC_Start(&hadc1);
-
-	  	 		 		 		 	  		if (HAL_ADC_PollForConversion(&hadc1,1000000)==HAL_OK)
-
-	  	 		 		 		 	  			 		 	 {
-
-	  	 		 		 		 	  			 		 	  	luz=HAL_ADC_GetValue(&hadc1);
-
-	  	 		 		 		 	  			 		 	  	}
-
-
-
-
-
-
-	  	 		 	 if(luz<50 && fin==1 ){
-
-
-	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,0);
-
-
-
-	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
-
-
-
-	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
-
-
-
-	  	 		 	  		  		  for (int i=10;i<90;i=i+5){
-	  	 		 	  		  			  __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
-	  	 		 	  		  		    HAL_Delay(200);}
-
-
-
-	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,0);
-
-
-
-	  	 		 	  		  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,1);
-
-
-
-	  	 		 	  		  			fin=0;
-
-
-
-	  	 		 	  		  			down=0;
-
-
-
-
-
-
-	  	 		 	 }
-	  									HAL_ADC_Start(&hadc1);
-
-	  		 		 	  		  		if (HAL_ADC_PollForConversion(&hadc1,1000000)==HAL_OK)
-
-	  		 		 	  		  		{
-
-	  		 		 	  		  		luz=HAL_ADC_GetValue(&hadc1);
-
-	  		 		 	  		  		}
+	  	   if(luz>50 && fin==0){
+	  	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1);
+	  	 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,0);
+	   	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
+	  	 for (int i=90;i>10;i=i-5){
+	  	 	__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
+	  	        HAL_Delay(200);}
+	  	 HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,0);
+	  	 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13,1);
+		fin=1;
+		up=0;}
+	  	HAL_ADC_Start(&hadc1);
+
+	  	if (HAL_ADC_PollForConversion(&hadc1,1000000)==HAL_OK)
+		{
+			luz=HAL_ADC_GetValue(&hadc1); 	}
+ 		 	 if(luz<50 && fin==1 ){
+  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,0);
+  			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14,1);
+  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,0);
+				 for (int i=10;i<90;i=i+5){
+					 __HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_1,i);
+	  	 		         HAL_Delay(200);}
+  			HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,0);
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12,1);
+			fin=0;
+			down=0;
+			 }
+		  HAL_ADC_Start(&hadc1);
+		  if (HAL_ADC_PollForConversion(&hadc1,1000000)==HAL_OK)
+  		{
+			  luz=HAL_ADC_GetValue(&hadc1);
+  		}
 
 
 	  	}
